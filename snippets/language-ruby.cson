@@ -6,12 +6,54 @@
   '# encoding: UTF-8':
     'prefix': 'utf8'
     'body': '# encoding: ${1:UTF-8}\n'
+  'variable':
+    'prefix': 'v'
+    'body': '${1:variable} = ${2:\'${3:value}\'}'
+  'variable via equals':
+    'prefix': '='
+    'body': '${1:variable} = ${2:\'${3:value}\'}'
+  'assignment':
+    'prefix': 'a'
+    'body': '.${1:variable} = ${2:\'${3:value}\'}'
+  'self assignment/variable':
+    'prefix': 'att'
+    'body': 'self.${1:variable} = ${2:\'${3:value}\'}'
+  'memoized assignment':
+    'prefix': 'ma'
+    'body': '.${1:variable} ||= ${2:\'${3:value}\'}'
+  'self memoized assignment':
+    'prefix': 'matt'
+    'body': 'self.${1:variable} ||= ${2:\'${3:value}\'}'
+  'memoized variable':
+    'prefix': 'mv'
+    'body': '${1:variable} = ${2:\'${3:value}\'}'
+  'instance variable':
+    'prefix': 'iv'
+    'body': '@${1:variable} = ${2:\'${3:value}\'}'
+  'memoized instance variable':
+    'prefix': 'miv'
+    'body': '@${1:variable} ||= ${2:\'${3:value}\'}'
+  'class variable':
+    'prefix': 'cv'
+    'body': '@@${1:variable} = ${2:\'${3:value}\'}'
+  'memoized class variable':
+    'prefix': 'mcv'
+    'body': '@@${1:variable} ||= ${2:\'${3:value}\'}'
+  'array':
+    'prefix': 'ar'
+    'body': '[${1:value}]$0'
+  'array literal':
+    'prefix': 'alt'
+    'body': '%${1:w}(${2:values})$0'
   'if … else … end':
     'prefix': 'ife'
     'body': 'if ${1:condition}\n\t$2\nelse\n\t$3\nend'
   'if … end':
     'prefix': 'if'
     'body': 'if ${1:condition}\n\t$0\nend'
+  'interpolation in string':
+    'prefix': 'ips'
+    'body': '#{$1}$0'
   'case … end':
     'prefix': 'case'
     'body': 'case ${1:object}\nwhen ${2:condition}\n\t$0\nend'
@@ -23,16 +65,16 @@
     'body': 'TESTS = ${1:10_000}\nBenchmark.bmbm do |results|\n  $0\nend'
   'Dir.glob("..") { |file| .. }':
     'prefix': 'Dir'
-    'body': 'Dir.glob(${1:"${2:dir/glob/*}"}) { |${3:file}| $0 }'
+    'body': 'Dir.glob(${1:\'${2:dir/glob/*}\'}) { |${3:file}| $0 }'
   'Dir[".."]':
     'prefix': 'Dir'
-    'body': 'Dir[${1:"${2:glob/**/*.rb}"}]'
+    'body': 'Dir[${1:\'${2:glob/**/*.rb}\'}]'
   'File.foreach ("..") { |line| .. }':
     'prefix': 'File'
-    'body': 'File.foreach(${1:"${2:path/to/file}"}) { |${3:line}| $0 }'
+    'body': 'File.foreach(${1:\'${2:path/to/file}\'}) { |${3:line}| $0 }'
   'File.read("..")':
     'prefix': 'File'
-    'body': 'File.read(${1:"${2:path/to/file}"})'
+    'body': 'File.read(${1:\'${2:path/to/file}\'})'
   'Hash.new { |hash, key| hash[key] = .. }':
     'prefix': 'Hash'
     'body': 'Hash.new { |${1:hash}, ${2:key}| ${1:hash}[${2:key}] = $0 }'
@@ -46,11 +88,11 @@
     'prefix': 'Pn-'
     'body': 'PStore.new(${1:"${2:file_name.pstore}"})'
   'YAML.dump(.., file)':
-    'prefix': 'Yd-'
-    'body': 'File.open(${1:"${2:path/to/file}.yaml"}, "w") { |${3:file}| YAML.dump(${4:obj}, ${3:file}) }'
+    'prefix': 'Yd'
+    'body': 'File.open(${1:\'${2:path/to/file}.yaml\'}, \'w\') { |${3:file}| YAML.dump(${4:obj}, ${3:file}) }'
   'YAML.load(file)':
-    'prefix': 'Yl-'
-    'body': 'File.open(${1:"${2:path/to/file}.yaml"}) { |${3:file}| YAML.load(${3:file}) }'
+    'prefix': 'Yl'
+    'body': 'File.open(${1:\'${2:path/to/file}.yaml\'}) { |${3:file}| YAML.load(${3:file}) }'
   'alias_method ..':
     'prefix': 'am'
     'body': 'alias_method :${1:new_name}, :${0:old_name}'
@@ -77,25 +119,25 @@
     'body': 'assert_throws(:${1:expected}) { $0 }'
   'attr_accessor ..':
     'prefix': 'rw'
-    'body': 'attr_accessor :${0:attr_names}'
+    'body': 'attr_accessor :${0:attributes}'
   'attr_reader ..':
     'prefix': 'r'
-    'body': 'attr_reader :${0:attr_names}'
+    'body': 'attr_reader :${0:attributes}'
   'attr_writer ..':
     'prefix': 'w'
-    'body': 'attr_writer :${0:attr_names}'
+    'body': 'attr_writer :${0:attributes}'
   'ClassName = Struct .. do .. end':
-    'prefix': 'cla'
-    'body': '$1 = Struct.new(:${2:attr_names}) do\n\tdef ${3:method_name}\n\t\t$0\n\tend\n\t\n\t\nend'
+    'prefix': 'clastru'
+    'body': '$1 = Struct.new(:${2:attributes}) do\n\tdef ${3:method_name}\n\t\t$0\n\tend\n\t\n\t\nend'
   'class << self .. end':
-    'prefix': 'cla'
+    'prefix': 'eigen'
     'body': 'class << ${1:self}\n\t$0\nend'
   'class .. end':
     'prefix': 'cla'
     'body': 'class $1\n\t$0\nend'
   'class_from_name()':
-    'prefix': 'clafn'
-    'body': 'split("::").inject(Object) { |par, const| par.const_get(const) }'
+    'prefix': 'constantize'
+    'body': 'split(\'::\').inject(Object) { |par, const| par.const_get(const) }'
   'classify { |e| .. }':
     'prefix': 'cl'
     'body': 'classify { |${1:e}| $0 }'
@@ -108,6 +150,15 @@
   'def … end':
     'prefix': 'def'
     'body': 'def ${1:method_name}\n\t$0\nend'
+  'def bang end':
+    'prefix': 'defb'
+    'body': 'def ${1:method_name}!${2: ${3:arguments}}\n\t$0\nend'
+  'def question end':
+    'prefix': 'defq'
+    'body': 'def ${1:method_name}?${2: ${3:arguments}}\n\t$0\nend'
+  'memoized def':
+    'prefix': 'memdef'
+    'body': 'def ${1:method_name}\n\t@$1 ||= $0\nend'
   'def method_missing .. end':
     'prefix': 'defmm'
     'body': 'def method_missing(meth, *args, &blk)\n\t$0\nend'
@@ -142,10 +193,10 @@
     'prefix': 'eab'
     'body': 'each_byte { |${1:byte}| $0 }'
   'each_char { |chr| .. }':
-    'prefix': 'eac-'
+    'prefix': 'eac'
     'body': 'each_char { |${1:chr}| $0 }'
   'each_cons(..) { |group| .. }':
-    'prefix': 'eac-'
+    'prefix': 'eacons'
     'body': 'each_cons(${1:2}) { |${2:group}| $0 }'
   'each_index { |i| .. }':
     'prefix': 'eai'
@@ -160,7 +211,7 @@
     'prefix': 'eap'
     'body': 'each_pair { |${1:name}, ${2:val}| $0 }'
   'each_slice(..) { |group| .. }':
-    'prefix': 'eas-'
+    'prefix': 'easlice'
     'body': 'each_slice(${1:2}) { |${2:group}| $0 }'
   'each_value { |val| .. }':
     'prefix': 'eav'
@@ -176,19 +227,19 @@
     'body': 'extend Forwardable'
   'find { |e| .. }':
     'prefix': 'fin'
-    'body': 'find { |${1:e}| $0 }'
+    'body': 'find(${1:->{ ${2:default} }}) { |${3:e}| $0 }'
   'find_all { |e| .. }':
     'prefix': 'fina'
     'body': 'find_all { |${1:e}| $0 }'
-  'flatten_once()':
-    'prefix': 'flao'
-    'body': 'inject(Array.new) { |${1:arr}, ${2:a}| ${1:arr}.push(*${2:a}) }'
+  'flatten':
+    'prefix': 'flat'
+    'body': 'flatten${1:(${2:level})}'
   'grep(/pattern/) { |match| .. }':
     'prefix': 'gre'
     'body': 'grep(${1:/${2:pattern}/}) { |${3:match}| $0 }'
-  'Hash Pair — :key => "value"':
+  'Hash Pair — key: "value"':
     'prefix': ':'
-    'body': ':${1:key} => ${2:"${3:value}"}${4:, }'
+    'body': '${1:key}: ${2:\'${3:value}\'}${4:, }$0'
   'include Comparable ..':
     'prefix': 'Comp'
     'body': 'include Comparable\n\ndef <=>(other)\n\t$0\nend'
@@ -196,14 +247,14 @@
     'prefix': 'Enum'
     'body': 'include Enumerable\n\ndef each(&block)\n\t$0\nend'
   'loop { .. }':
-    'prefix': 'loo'
+    'prefix': 'loop'
     'body': 'loop { $0 }'
   'map { |e| .. }':
     'prefix': 'map'
     'body': 'map { |${1:e}| $0 }'
   'map_with_index { |e, i| .. }':
-    'prefix': 'mapwi-'
-    'body': 'enum_with_index.map { |${1:e}, ${2:i}| $0 }'
+    'prefix': 'mapwith'
+    'body': 'map.with_index { |${1:e}, ${2:i}| $0 }'
   'max { |a, b| .. }':
     'prefix': 'max'
     'body': 'max { |a, b| $0 }'
@@ -211,7 +262,7 @@
     'prefix': 'min'
     'body': 'min { |a, b| $0 }'
   'module .. module_function .. end':
-    'prefix': 'mod'
+    'prefix': 'modf'
     'body': 'module $1\n\tmodule_function\n\t\n\t$0\nend'
   'module .. end':
     'prefix': 'mod'
@@ -225,24 +276,15 @@
   'path_from_here( .. )':
     'prefix': 'patfh'
     'body': 'File.join(File.dirname(__FILE__), *%w[${1:rel path here}])'
-  'randomize()':
-    'prefix': 'ran'
-    'body': 'sort_by { rand }'
+  'shuffle':
+    'prefix': 'shuf'
+    'body': 'shuffle'
   'reject { |e| .. }':
     'prefix': 'rej'
     'body': 'reject { |${1:e}| $0 }'
   'require ".."':
     'prefix': 'req'
-    'body': 'require "$0"'
-  'require "tc_.." ..':
-    'prefix': 'ts'
-    'body': 'require "test/unit"\n\nrequire "tc_${1:test_case_file}"\nrequire "tc_${2:test_case_file}"\n'
-  'require_gem ".."':
-    'prefix': 'reqg-'
-    'body': 'require "$0"'
-  'results.report(..) { .. }':
-    'prefix': 'rep'
-    'body': 'results.report("${1:name}:") { TESTS.times { $0 } }'
+    'body': 'require \'$0\''
   'reverse_each { |e| .. }':
     'prefix': 'reve'
     'body': 'reverse_each { |${1:e}| $0 }'
@@ -251,19 +293,13 @@
     'body': 'scan(/${1:pattern}/) { |${2:match}| $0 }'
   'select { |e| .. }':
     'prefix': 'sel'
-    'body': 'select { |${1:e}| $0 }'
-  'singleton_class()':
-    'prefix': 'sinc'
-    'body': 'class << self; self end'
+    'body': 'select${1:!} { |${2:e}| $0 }'
   'sort { |a, b| .. }':
     'prefix': 'sor'
-    'body': 'sort { |a, b| $0 }'
+    'body': 'sort${1:!} { |a, b| $0 }'
   'sort_by { |e| .. }':
     'prefix': 'sorb'
-    'body': 'sort_by { |${1:e}| $0 }'
-  'task :task_name => [:dependent, :tasks] do .. end':
-    'prefix': 'tas'
-    'body': 'desc "${1:Task description}"\ntask :${2:${3:task_name} => ${4:[:${5:dependent, :tasks}]}} do\n\t$0\nend'
+    'body': 'sort_by${1:!} { |${2:e}| $0 }'
   'unix_filter { .. }':
     'prefix': 'unif'
     'body': 'ARGF.each_line$1 do |${2:line}|\n\t$0\nend'
@@ -286,7 +322,7 @@
     'prefix': 'while'
     'body': 'while ${1:condition}\n\t$0\nend'
   'xmlread(..)':
-    'prefix': 'xml-'
+    'prefix': 'xmlrea'
     'body': 'REXML::Document.new(File.read(${1:"${2:path/to/file}"}))'
   'xpath(..) { .. }':
     'prefix': 'xpa'
