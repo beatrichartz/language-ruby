@@ -182,7 +182,25 @@
     'body': 'detect { |${1:e}| $0 }'
   'directory()':
     'prefix': 'dir'
-    'body': 'File.dirname(__FILE__)'
+    'body': 'File.dirname __FILE__'
+  'extend':
+    'prefix': 'ext'
+    'body': 'extend ${0:Object}'
+  'flipflop':
+    'prefix': 'ff'
+    'body': '${1:iftrue}..${0:untilfalse}'
+  'gsub':
+    'prefix': 'gsu'
+    'body': 'gsub /${1:regexp}/, ${2:\'${3:string}\'}$0'
+  'gsub block':
+    'prefix': 'gsub'
+    'prefix': 'gsub(/${1:regexp}/){ $2 }'
+  'heredoc':
+    'prefix': 'hd'
+    'body': '<<-${1:EOF}\n  $0\n$1'
+  'heredocarray':
+    'prefix': 'hda'
+    'body': '[<<-${1:ONE}, <<-${2:TWO}]\n  $3\n$1\n  $4\n$2'
   'Insert do |variable| … end':
     'prefix': 'do'
     'body': 'do${1: |${2:variable}|}\n\t$0\nend'
